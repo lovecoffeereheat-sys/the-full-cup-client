@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coffee Grounds — Bottom of the Cup</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --rose:#944e63;--rose-mid:#b47b84;--rose-soft:#caa6a6;--rose-pale:#f6e6e3;
+  --navy:#16042d;--navy-light:#3a2050;--navy-faint:#7a6a8a;
+  --white:#fffaf9;--border:#e0c8c4;--cream:#fdf6f0;--ink:#2a1a2e;
+  --gold:#c9984a;--gold-pale:#f5ead8;--coffee:#6b4c35;--coffee-light:#9b7355;
+  --sage:#7a8c6e;--sage-pale:#edf0ea;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Lora',Georgia,serif;background:var(--navy);color:var(--ink);min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.5}
+
+/* ── SETUP ── */
+.setup{position:fixed;inset:0;background:var(--navy);z-index:200;display:flex;align-items:center;justify-content:center;padding:2rem}
+.setup.hidden{display:none}
+.setup-box{background:rgba(255,255,255,.04);border:1px solid rgba(201,152,74,.2);border-radius:14px;padding:2.5rem 2rem;max-width:420px;width:100%;text-align:center}
+.setup-eyebrow{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--coffee-light);margin-bottom:.5rem}
+.setup-title{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--gold-pale);margin-bottom:.5rem}
+.setup-title em{color:var(--gold);font-style:italic}
+.setup-sub{font-size:.82rem;font-style:italic;color:rgba(155,115,85,.6);margin-bottom:1.8rem;line-height:1.6}
+.setup-field{margin-bottom:.85rem;text-align:left}
+.setup-field label{display:block;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--coffee-light);margin-bottom:.35rem}
+.setup-field input{width:100%;background:rgba(245,234,216,.07);border:1px solid rgba(245,234,216,.15);border-radius:6px;padding:.7rem 1rem;font-family:'Lora',serif;font-size:.85rem;color:var(--gold-pale);outline:none;transition:border-color .2s}
+.setup-field input:focus{border-color:rgba(201,152,74,.4)}
+.setup-field input::placeholder{color:rgba(155,115,85,.35);font-style:italic}
+.setup-hint{font-size:.6rem;color:rgba(155,115,85,.4);margin-top:.25rem;font-style:italic}
+.setup-btn{width:100%;background:var(--rose);color:white;border:none;border-radius:6px;padding:.85rem;font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;margin-top:1rem;transition:background .2s}
+.setup-btn:hover{background:var(--navy-light)}
+
+/* ── APP ── */
+.app{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:48px 24px 80px}
+
+/* ── HEADER ── */
+.header{text-align:center;margin-bottom:48px}
+.cup{font-size:2.2rem;margin-bottom:12px;display:block}
+.header-eyebrow{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.32em;text-transform:uppercase;color:var(--coffee-light);margin-bottom:.4rem}
+.header-title{font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;color:var(--gold-pale);margin-bottom:.3rem}
+.header-title em{font-style:italic;color:var(--gold)}
+.header-sub{font-size:.85rem;font-style:italic;color:var(--navy-faint);line-height:1.6}
+
+/* ── STEP INDICATOR ── */
+.steps{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:40px}
+.step{display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--navy-faint);transition:color .3s}
+.step.active{color:var(--gold)}
+.step.done{color:var(--sage)}
+.step-dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
+.step-line{width:32px;height:1px;background:var(--navy-light);margin:0 4px}
+
+/* ── PANELS ── */
+.panel{display:none}
+.panel.active{display:block}
+
+/* ── SECTION ── */
+.section{background:var(--white);border-radius:12px;padding:28px;margin-bottom:20px}
+.section-eyebrow{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:var(--rose);margin-bottom:.4rem}
+.section-title{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:400;color:var(--ink);margin-bottom:.3rem}
+.section-title em{font-style:italic;color:var(--rose)}
+.section-sub{font-size:.8rem;font-style:italic;color:var(--navy-faint);margin-bottom:1.2rem;line-height:1.6}
+
+/* ── DUMP TEXTAREA ── */
+.dump-area{width:100%;min-height:140px;resize:none;border:1.5px solid var(--border);border-radius:8px;padding:14px 16px;font-family:'Lora',serif;font-size:.9rem;color:var(--ink);background:var(--cream);outline:none;line-height:1.7;transition:border-color .2s}
+.dump-area:focus{border-color:var(--rose-mid)}
+.dump-area::placeholder{color:var(--rose-soft);font-style:italic}
+.dump-count{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.1em;color:var(--navy-faint);margin-top:.4rem;text-align:right}
+
+/* ── BUTTONS ── */
+.btn{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;padding:.75rem 1.5rem;border-radius:6px;cursor:pointer;border:none;transition:all .2s}
+.btn-primary{background:var(--rose);color:white}
+.btn-primary:hover{background:#7a3d52}
+.btn-primary:disabled{background:var(--rose-soft);cursor:not-allowed}
+.btn-secondary{background:transparent;border:1.5px solid var(--border);color:var(--navy-faint)}
+.btn-secondary:hover{border-color:var(--rose-soft);color:var(--rose)}
+.btn-ghost{background:transparent;border:none;color:var(--navy-faint);font-size:.65rem;padding:.5rem .75rem}
+.btn-ghost:hover{color:var(--rose)}
+.btn-row{display:flex;gap:10px;margin-top:1.2rem;flex-wrap:wrap}
+
+/* ── AI STATUS ── */
+.ai-status{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.1em;color:var(--coffee-light);margin-top:.8rem;min-height:1.2rem;font-style:italic}
+.ai-status.error{color:var(--rose)}
+
+/* ── TRIAGE CARDS ── */
+.triage-list{display:flex;flex-direction:column;gap:10px;margin-bottom:1.2rem}
+.triage-card{background:var(--cream);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;transition:border-color .2s}
+.triage-card.removed{opacity:.35;background:#f8f8f8}
+.triage-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
+.triage-task-name{font-size:.9rem;font-weight:500;color:var(--ink);flex:1;line-height:1.4}
+.triage-remove{font-family:'DM Mono',monospace;font-size:9px;color:var(--rose-soft);background:none;border:none;cursor:pointer;padding:2px 6px;transition:color .15s;flex-shrink:0}
+.triage-remove:hover{color:var(--rose)}
+.triage-controls{display:flex;gap:8px;flex-wrap:wrap}
+.triage-label{font-family:'DM Mono',monospace;font-size:7.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--navy-faint);margin-bottom:4px;display:block}
+.triage-group{display:flex;flex-direction:column}
+.chip-row{display:flex;gap:5px;flex-wrap:wrap}
+.chip{font-family:'DM Mono',monospace;font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:20px;cursor:pointer;border:1.5px solid var(--border);background:transparent;color:var(--navy-faint);transition:all .15s}
+.chip:hover{border-color:var(--rose-soft);color:var(--rose-mid)}
+.chip.active-high{background:#fbeaea;border-color:#d47a7a;color:#a03030}
+.chip.active-medium{background:#f0eafa;border-color:#9b7bc4;color:#5a3a8a}
+.chip.active-low{background:#eaf0fb;border-color:#7a9bc4;color:#2a5a8a}
+.chip.active-today{background:#fff8ea;border-color:#c9984a;color:#7a5a1a}
+.chip.active-this_week{background:#eaf5f0;border-color:#6aaa8a;color:#2a6a4a}
+.chip.active-someday{background:#f0eaf5;border-color:#9a7aaa;color:#5a3a6a}
+
+/* ── POUR SUMMARY ── */
+.pour-summary{background:var(--cream);border-radius:10px;padding:16px;margin-bottom:1.2rem;border:1px solid var(--border)}
+.pour-summary-title{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--coffee-light);margin-bottom:10px}
+.pour-item{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);gap:8px}
+.pour-item:last-child{border-bottom:none}
+.pour-item-name{font-size:.82rem;color:var(--ink);flex:1}
+.pour-badges{display:flex;gap:5px;flex-shrink:0}
+.badge{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.08em;padding:2px 7px;border-radius:10px;text-transform:uppercase}
+.badge-high{background:#fbeaea;color:#a03030}
+.badge-medium{background:#f0eafa;color:#5a3a8a}
+.badge-low{background:#eaf0fb;color:#2a5a8a}
+.badge-today{background:#fff8ea;color:#7a5a1a}
+.badge-this_week{background:#eaf5f0;color:#2a6a4a}
+.badge-someday{background:#f0eaf5;color:#5a3a6a}
+
+/* ── STATUS MSG ── */
+.status-msg{font-family:'DM Mono',monospace;font-size:.75rem;letter-spacing:.08em;padding:.75rem 1rem;border-radius:6px;margin-top:.8rem;display:none}
+.status-msg.show{display:block}
+.status-msg.saving{background:var(--gold-pale);color:var(--coffee)}
+.status-msg.saved{background:var(--sage-pale);color:#2a5a3a}
+.status-msg.error{background:var(--rose-pale);color:var(--rose)}
+
+/* ── FOOTER ── */
+.footer{text-align:center;margin-top:48px}
+.footer-text{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--navy-faint)}
+.footer-text a{color:var(--rose-soft);text-decoration:none}
+.footer-text a:hover{color:var(--rose)}
+.gear{background:none;border:none;cursor:pointer;color:var(--navy-faint);font-size:14px;margin-left:8px;transition:color .15s}
+.gear:hover{color:var(--rose)}
+</style>
+</head>
+<body>
+
+<!-- SETUP -->
+<div class="setup" id="setup">
+  <div class="setup-box">
+    <div class="setup-eyebrow">Bottom of the Cup</div>
+    <h1 class="setup-title"><em>Coffee Grounds</em></h1>
+    <p class="setup-sub">get it out of your head. we'll sort the rest.</p>
+    <div class="setup-field">
+      <label>Anthropic API Key</label>
+      <input type="password" id="setupAK" placeholder="sk-ant-...">
+      <div class="setup-hint">for AI sorting — stays in your browser only</div>
+    </div>
+    <button class="setup-btn" onclick="saveSetup()">start pouring →</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app" style="display:none">
+
+  <div class="header">
+    <span class="cup">☕</span>
+    <div class="header-eyebrow">Bottom of the Cup</div>
+    <h1 class="header-title"><em>Coffee Grounds</em></h1>
+    <p class="header-sub">dump it all. triage what matters. pour it into notion.</p>
+  </div>
+
+  <!-- STEPS -->
+  <div class="steps" id="steps">
+    <div class="step active" id="step-dump"><div class="step-dot"></div>dump</div>
+    <div class="step-line"></div>
+    <div class="step" id="step-triage"><div class="step-dot"></div>triage</div>
+    <div class="step-line"></div>
+    <div class="step" id="step-pour"><div class="step-dot"></div>pour</div>
+  </div>
+
+  <!-- PANEL 1: DUMP -->
+  <div class="panel active" id="panel-dump">
+    <div class="section">
+      <div class="section-eyebrow">Step 1</div>
+      <h2 class="section-title">What's in your <em>head right now?</em></h2>
+      <p class="section-sub">One thought per line. Don't edit yourself — just get it down. We'll sort it after.</p>
+      <textarea class="dump-area" id="dumpText" placeholder="email dr. gill&#10;finish the tools post&#10;rest — body has been loud&#10;look into that course..." oninput="updateCount()"></textarea>
+      <div class="dump-count" id="dumpCount">0 thoughts</div>
+      <div class="ai-status" id="dumpStatus"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="sortBtn" onclick="sortDump()">help me sort this →</button>
+        <button class="btn btn-secondary" onclick="clearDump()">clear</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL 2: TRIAGE -->
+  <div class="panel" id="panel-triage">
+    <div class="section">
+      <div class="section-eyebrow">Step 2</div>
+      <h2 class="section-title">Does this <em>feel right?</em></h2>
+      <p class="section-sub">AI made suggestions — adjust anything that doesn't land. Remove what doesn't belong. Then pour what's left into Notion.</p>
+      <div class="triage-list" id="triageList"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="goToPour()">looks good — pour it in →</button>
+        <button class="btn btn-secondary" onclick="goToDump()">← back to dump</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL 3: POUR -->
+  <div class="panel" id="panel-pour">
+    <div class="section">
+      <div class="section-eyebrow">Step 3</div>
+      <h2 class="section-title">Ready to <em>pour into Notion?</em></h2>
+      <p class="section-sub">These tasks will land in Coffee Grounds with Brain Dump status, your chosen priority, and a due date based on the timeframe.</p>
+      <div class="pour-summary" id="pourSummary"></div>
+      <div class="status-msg" id="pourStatus"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="pourBtn" onclick="pourToNotion()">pour it in →</button>
+        <button class="btn btn-secondary" onclick="goToTriage()">← back to triage</button>
+        <button class="btn btn-ghost" onclick="startOver()">start over</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="footer-text">
+      <a href="https://bottomcup.substack.com" target="_blank">coffee grounds · bottom of the cup</a>
+    </span>
+    <button class="gear" onclick="openSetup()" title="Settings">⚙</button>
+  </div>
+
+</div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────
+let triageTasks = [];
+
+// ── SETUP ─────────────────────────────────────────────────────
+function getAK(){ return localStorage.getItem('cg_ak')||''; }
+
+function saveSetup(){
+  const ak = document.getElementById('setupAK').value.trim();
+  if(!ak){ alert('Please enter your Anthropic API key.'); return; }
+  localStorage.setItem('cg_ak', ak);
+  document.getElementById('setup').classList.add('hidden');
+  document.getElementById('app').style.display = 'block';
+}
+
+function openSetup(){
+  document.getElementById('setupAK').value = getAK();
+  document.getElementById('setup').classList.remove('hidden');
+}
+
+function init(){
+  if(getAK()){
+    document.getElementById('setup').classList.add('hidden');
+    document.getElementById('app').style.display = 'block';
+  }
+}
+
+// ── STEPS ─────────────────────────────────────────────────────
+function setStep(step){
+  ['dump','triage','pour'].forEach((s,i) => {
+    const el = document.getElementById('step-'+s);
+    const panel = document.getElementById('panel-'+s);
+    const idx = ['dump','triage','pour'].indexOf(step);
+    el.className = 'step' + (s===step?' active': i<idx?' done':'');
+    panel.className = 'panel' + (s===step?' active':'');
+  });
+}
+
+function goToDump(){ setStep('dump'); }
+function goToTriage(){ setStep('triage'); }
+
+// ── DUMP ──────────────────────────────────────────────────────
+function updateCount(){
+  const lines = document.getElementById('dumpText').value.split('\n').filter(l=>l.trim());
+  const el = document.getElementById('dumpCount');
+  el.textContent = lines.length + (lines.length===1?' thought':' thoughts');
+}
+
+function clearDump(){
+  document.getElementById('dumpText').value = '';
+  updateCount();
+  document.getElementById('dumpStatus').textContent = '';
+  document.getElementById('dumpStatus').className = 'ai-status';
+}
+
+async function sortDump(){
+  const text = document.getElementById('dumpText').value.trim();
+  if(!text){ return; }
+  const lines = text.split('\n').filter(l=>l.trim());
+  if(!lines.length){ return; }
+
+  const btn = document.getElementById('sortBtn');
+  const status = document.getElementById('dumpStatus');
+  btn.disabled = true;
+  btn.textContent = 'sorting...';
+  status.textContent = 'reading the grounds...';
+  status.className = 'ai-status';
+
+  const system = `You are a calm, practical assistant helping a midlife woman sort tasks from her brain dump. 
+For each task, suggest:
+- priority: High, Medium, or Low
+- timeframe: today (urgent, must happen today), this_week (should happen this week), or someday (this month, no rush)
+
+Be thoughtful. Don't make everything High priority. Rest and self-care tasks can be High if the body needs it.
+Return ONLY valid JSON array, no other text:
+[{"name":"task name","priority":"High|Medium|Low","timeframe":"today|this_week|someday"}]`;
+
+  const userMsg = 'Sort these tasks:\n' + lines.map((l,i)=>`${i+1}. ${l.trim()}`).join('\n');
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key': getAK(),
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body: JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:1000,
+        system,
+        messages:[{role:'user',content:userMsg}]
+      })
+    });
+
+    if(!res.ok) throw new Error('AI error ' + res.status);
+    const data = await res.json();
+    const raw = data.content?.map(b=>b.text||'').join('')||'';
+    const json = raw.match(/\[[\s\S]*\]/)?.[0];
+    if(!json) throw new Error('Could not parse AI response');
+    triageTasks = JSON.parse(json).map((t,i)=>({...t, id:i, removed:false}));
+    renderTriage();
+    setStep('triage');
+    status.textContent = '';
+  } catch(e){
+    status.textContent = 'something went sideways — ' + e.message;
+    status.className = 'ai-status error';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'help me sort this →';
+  }
+}
+
+// ── TRIAGE ────────────────────────────────────────────────────
+function renderTriage(){
+  const list = document.getElementById('triageList');
+  list.innerHTML = triageTasks.map((t,i) => `
+    <div class="triage-card${t.removed?' removed':''}" id="tc-${i}">
+      <div class="triage-card-top">
+        <div class="triage-task-name">${esc(t.name)}</div>
+        <button class="triage-remove" onclick="toggleRemove(${i})">${t.removed?'restore':'remove'}</button>
+      </div>
+      ${!t.removed?`
+      <div class="triage-controls">
+        <div class="triage-group">
+          <span class="triage-label">Priority</span>
+          <div class="chip-row">
+            ${['High','Medium','Low'].map(p=>`<button class="chip${t.priority===p?' active-'+p.toLowerCase():''}" onclick="setPriority(${i},'${p}')">${p}</button>`).join('')}
+          </div>
+        </div>
+        <div class="triage-group">
+          <span class="triage-label">Timeframe</span>
+          <div class="chip-row">
+            <button class="chip${t.timeframe==='today'?' active-today':''}" onclick="setTimeframe(${i},'today')">Today</button>
+            <button class="chip${t.timeframe==='this_week'?' active-this_week':''}" onclick="setTimeframe(${i},'this_week')">This Week</button>
+            <button class="chip${t.timeframe==='someday'?' active-someday':''}" onclick="setTimeframe(${i},'someday')">Someday</button>
+          </div>
+        </div>
+      </div>`:''}
+    </div>
+  `).join('');
+}
+
+function toggleRemove(i){
+  triageTasks[i].removed = !triageTasks[i].removed;
+  renderTriage();
+}
+
+function setPriority(i, p){
+  triageTasks[i].priority = p;
+  renderTriage();
+}
+
+function setTimeframe(i, t){
+  triageTasks[i].timeframe = t;
+  renderTriage();
+}
+
+function goToPour(){
+  const active = triageTasks.filter(t=>!t.removed);
+  if(!active.length){ alert('No tasks to pour — restore some or go back to add more.'); return; }
+  renderPourSummary(active);
+  setStep('pour');
+}
+
+// ── POUR ──────────────────────────────────────────────────────
+function renderPourSummary(tasks){
+  const el = document.getElementById('pourSummary');
+  el.innerHTML = `<div class="pour-summary-title">${tasks.length} task${tasks.length!==1?'s':''} ready to pour</div>` +
+    tasks.map(t=>`
+      <div class="pour-item">
+        <div class="pour-item-name">${esc(t.name)}</div>
+        <div class="pour-badges">
+          <span class="badge badge-${t.priority.toLowerCase()}">${t.priority}</span>
+          <span class="badge badge-${t.timeframe}">${t.timeframe.replace('_',' ')}</span>
+        </div>
+      </div>
+    `).join('');
+}
+
+async function pourToNotion(){
+  const tasks = triageTasks.filter(t=>!t.removed);
+  if(!tasks.length){ return; }
+
+  const btn = document.getElementById('pourBtn');
+  const status = document.getElementById('pourStatus');
+  btn.disabled = true;
+  btn.textContent = 'pouring...';
+  status.className = 'status-msg show saving';
+  status.textContent = 'sending to coffee grounds...';
+
+  try {
+    const res = await fetch('/.netlify/functions/create-tasks', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ tasks })
+    });
+
+    const data = await res.json();
+
+    if(data.ok > 0){
+      status.className = 'status-msg show saved';
+      status.textContent = `${data.ok} task${data.ok!==1?'s':''} poured into Coffee Grounds ☕${data.failed?` (${data.failed} failed)`:''}`;
+      btn.textContent = 'poured ✓';
+      setTimeout(()=>{ startOver(); }, 3000);
+    } else {
+      throw new Error(data.errors?.[0] || 'All tasks failed');
+    }
+  } catch(e){
+    status.className = 'status-msg show error';
+    status.textContent = 'something went wrong — ' + e.message;
+    btn.disabled = false;
+    btn.textContent = 'pour it in →';
+  }
+}
+
+function startOver(){
+  triageTasks = [];
+  document.getElementById('dumpText').value = '';
+  document.getElementById('dumpStatus').textContent = '';
+  document.getElementById('pourStatus').className = 'status-msg';
+  document.getElementById('pourBtn').disabled = false;
+  document.getElementById('pourBtn').textContent = 'pour it in →';
+  updateCount();
+  setStep('dump');
+}
+
+// ── UTILS ─────────────────────────────────────────────────────
+function esc(s){
+  if(!s) return '';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+init();
+</script>
+</body>
+</html>
