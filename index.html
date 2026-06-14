@@ -630,41 +630,6 @@ function renderSpread(sr){
   document.getElementById('spreadSub').textContent=`${energyDesc[dumpEnergy]||'half a cup'} energy week \u2014 rough placement. Move anything that doesn't feel right.`;
 }
 
-async function saveDumpToNotion(){
-  if(!dumpResult)return;
-  const btn=document.getElementById('dumpSaveBtn');btn.disabled=true;
-  document.getElementById('dumpSaveSpinner').classList.add('show');document.getElementById('dumpSaveLabel').textContent='sending...';
-  showNotionStatus('dumpSaveStatus','saving','adding tasks to coffee grounds...');
-  const today=new Date().toISOString().split('T')[0];
-  const midWeek=new Date();midWeek.setDate(midWeek.getDate()+3);const midWeekStr=midWeek.toISOString().split('T')[0];
-  const endMonth=new Date(new Date().getFullYear(),new Date().getMonth()+1,0).toISOString().split('T')[0];
-  const lines=[];
-  (dumpResult.today||[]).forEach(t=>lines.push(`TODAY | "${t}" | priority: High | due: ${today} | bucket: daily brew | day-to-day: yes`));
-  (dumpResult.later_week||[]).forEach(t=>{let due=midWeekStr;if(spreadResult){for(const[day,items]of Object.entries(spreadResult.spread)){if(items.includes(t)){due=spreadResult.dayDates[day];break}}}lines.push(`LATER-WEEK | "${t}" | priority: Medium | due: ${due} | bucket: daily brew`);});
-  (dumpResult.later_month||[]).forEach(t=>lines.push(`LATER-MONTH | "${t}" | priority: Low | due: ${endMonth} | bucket: home & life`));
-  (dumpResult.someday||[]).forEach(t=>lines.push(`SOMEDAY | "${t}" | priority: Low | status: Brain Dump | bucket: someday`));
-  if(!lines.length){showNotionStatus('dumpSaveStatus','error','no tasks to send');btn.disabled=false;document.getElementById('dumpSaveSpinner').classList.remove('show');document.getElementById('dumpSaveLabel').textContent='send to coffee grounds \u2192';return}
-  try{
-    for(const line of lines){
-      const parts=line.split(' | ');
-      const bucket_val=parts.find(p=>p.startsWith('bucket:'))?.split(': ')[1]?.trim()||'';
-      const priority_val=parts.find(p=>p.startsWith('priority:'))?.split(': ')[1]?.trim()||'Medium';
-      const due_val=parts.find(p=>p.startsWith('due:'))?.split(': ')[1]?.trim()||'';
-      const dtd=line.includes('day-to-day: yes');
-      const isToday=line.startsWith('TODAY');
-      const isSomeday=line.startsWith('SOMEDAY');
-      const nameMatch=line.match(/"([^"]+)"/);
-      const name=nameMatch?nameMatch[1]:'untitled';
-      const props={task:{title:[{text:{content:name}}]},status:{select:{name:isSomeday?'Brain Dump':'To Do'}},priority:{select:{name:priority_val}}};
-      if(bucket_val)props.bucket={select:{name:bucket_val}};
-      if(due_val)props.due={date:{start:due_val}};
-      if(dtd)props['day-to-day']={checkbox:true};
-      await notionCreate(props);
-    }
-    showNotionStatus('dumpSaveStatus','saved',`${lines.length} task${lines.length>1?'s':''} added to Coffee Grounds ☕`);showToast(lines.length+' tasks sent to Notion');
-  }catch(e){showNotionStatus('dumpSaveStatus','error','something went sideways — '+e.message);}
-  btn.disabled=false;document.getElementById('dumpSaveSpinner').classList.remove('show');document.getElementById('dumpSaveLabel').textContent='send to coffee grounds \u2192';
-}
 
 
 // ── WEEKLY SWEEP ───────────────────────────────────────────────
