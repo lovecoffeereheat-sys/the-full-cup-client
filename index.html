@@ -433,23 +433,7 @@ const NOTION_VERSION='2022-06-28';
 const inClaude=typeof sendPrompt==='function';
 
 
-// Notion calls go via Netlify function to avoid CORS
-const PROXY='/.netlify/functions/notion-proxy';
-async function notionCreate(props){
-  const res=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'create',props})});
-  if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.message||'Notion error '+res.status);}
-  return res.json();
-}
-async function notionUpdate(pageId,props){
-  const res=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'update',pageId,props})});
-  if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.message||'Notion update error '+res.status);}
-  return res.json();
-}
-async function notionQuery(filter,sorts){
-  const res=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'query',filter,sorts})});
-  if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.message||'Notion query error '+res.status);}
-  return res.json();
-}
+
 
 async function callAI(system,userMsg,maxTokens=1500){
   const res=await fetch('/.netlify/functions/claude-proxy',{
