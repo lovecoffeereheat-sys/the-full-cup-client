@@ -343,65 +343,7 @@ textarea{resize:vertical}
           <button class="btn-secondary" onclick="resetDump()">start over</button>
     
 
-  <!-- ADD TASK PANEL -->
-  <div class="panel" id="panel-add">
-    <div class="card">
-      <p class="section-eyebrow">New grounds</p>
-      <h2 class="section-title">Add a task to <em>Coffee Grounds</em></h2>
-      <p class="section-sub">Brain dump it here. Sort it later.</p>
-      <div class="divider"></div>
-      <div class="add-form">
-        <p class="add-form-title">Task details</p>
-        <div class="form-full">
-          <label class="field-label">Task</label>
-          <input type="text" id="newTask" placeholder="what needs doing..."/>
-        </div>
-        <div class="form-row">
-          <div>
-            <label class="field-label">Status</label>
-            <select id="newStatus"><option value="Brain Dump">Brain Dump</option><option value="To Do" selected>To Do</option><option value="In Progress">In Progress</option><option value="On Hold">On Hold</option></select>
-          </div>
-          <div>
-            <label class="field-label">Priority</label>
-            <select id="newPriority"><option value="">&#8212; none &#8212;</option><option value="High">High</option><option value="Medium" selected>Medium</option><option value="Low">Low</option></select>
-          </div>
-        </div>
-        <div class="form-row">
-          <div>
-            <label class="field-label">Area</label>
-            <select id="newArea"><option value="">&#8212; none &#8212;</option><option value="content">content</option><option value="admin">admin</option><option value="home">home</option><option value="body">body</option><option value="money">money</option><option value="building">building</option></select>
-          </div>
-          <div>
-            <label class="field-label">Bucket</label>
-            <select id="newBucket"><option value="">&#8212; none &#8212;</option><option value="daily brew">daily brew</option><option value="home &amp; life">home &amp; life</option><option value="steep &amp; restore">steep &amp; restore</option><option value="someday">someday</option></select>
-          </div>
-        </div>
-        <div class="form-row">
-          <div>
-            <label class="field-label">Due Date</label>
-            <input type="date" id="newDue"/>
-          </div>
-          <div>
-            <label class="field-label">Phase</label>
-            <select id="newPhase"><option value="">&#8212; none &#8212;</option><option value="Content">Content</option><option value="Substack">Substack</option><option value="Launch">Launch</option><option value="Scripts">Scripts</option></select>
-          </div>
-        </div>
-        <div class="form-full">
-          <label class="field-label">Notes</label>
-          <textarea id="newNotes" rows="2" placeholder="any context..."></textarea>
-        </div>
-        <div class="checkbox-row"><input type="checkbox" id="newDayToDay"/><label for="newDayToDay">day-to-day task</label></div>
-        <div class="checkbox-row"><input type="checkbox" id="newContentRelated"/><label for="newContentRelated">content related</label></div>
-      </div>
-      <div class="btn-row" style="margin-top:0;">
-        <button class="btn-notion" id="addBtn" onclick="addTask()">
-          <div class="spinner-sm" id="addSpinner"></div>
-          <span id="addLabel">add to coffee grounds &rarr;</span>
-        </button>
-      </div>
-      <div class="notion-status" id="addStatus"></div>
-    </div>
-  </div>
+  
 
   <!-- WEEKLY SWEEP PANEL -->
   <div class="panel" id="panel-sweep">
