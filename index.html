@@ -523,15 +523,6 @@ const DB_URL='https://www.notion.so/'+DB_ID.replace(/-/g,'');
 const NOTION_VERSION='2022-06-28';
 const inClaude=typeof sendPrompt==='function';
 
-function getAK(){return sessionStorage.getItem('cg_ak')||''}
-function saveKeys(){
-  const ak=document.getElementById('setupAK').value.trim();
-  if(!ak){showToast('add your Anthropic key');return}
-  sessionStorage.setItem('cg_ak',ak);
-  document.getElementById('setupOverlay').classList.add('hidden');
-  showToast("keys saved — let's go");
-}
-
 
 // Notion calls go via Netlify function to avoid CORS
 const PROXY='/.netlify/functions/notion-proxy';
