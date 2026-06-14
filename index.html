@@ -531,12 +531,7 @@ function saveKeys(){
   document.getElementById('setupOverlay').classList.add('hidden');
   showToast("keys saved — let's go");
 }
-function initSetup(){
-  const overlay=document.getElementById('setupOverlay');
-  if(getAK()){overlay.classList.add('hidden');return}
-}
-document.querySelectorAll('.setup-field input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter')saveKeys()}));
-initSetup();
+
 
 // Notion calls go via Netlify function to avoid CORS
 const PROXY='/.netlify/functions/notion-proxy';
@@ -585,7 +580,7 @@ function selectTimeframe(btn){document.querySelectorAll('#dumpTimeframe .energy-
 async function runDump(){
   const raw=document.getElementById('dumpText').value.trim();
   if(!raw){showToast('add at least one thing first');return}
-  if(!getAK()){document.getElementById('setupOverlay').classList.remove('hidden');return}
+  
   const items=raw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
   if(!items.length){showToast('nothing to sort');return}
   const btn=document.getElementById('dumpBtn');btn.disabled=true;
@@ -677,7 +672,7 @@ function renderSpread(sr){
 }
 
 async function saveDumpToNotion(){
-  if(!dumpResult)return;if(!getAK()){document.getElementById('setupOverlay').classList.remove('hidden');return}
+  if(!dumpResult)return;
   const btn=document.getElementById('dumpSaveBtn');btn.disabled=true;
   document.getElementById('dumpSaveSpinner').classList.add('show');document.getElementById('dumpSaveLabel').textContent='sending...';
   showNotionStatus('dumpSaveStatus','saving','adding tasks to coffee grounds...');
@@ -715,7 +710,7 @@ async function saveDumpToNotion(){
 async function addTask(){
   const task=document.getElementById('newTask').value.trim();
   if(!task){showToast('add a task name first');return}
-  if(!getAK()){document.getElementById('setupOverlay').classList.remove('hidden');return}
+  
   const btn=document.getElementById('addBtn');btn.disabled=true;
   document.getElementById('addSpinner').classList.add('show');document.getElementById('addLabel').textContent='adding...';
   showNotionStatus('addStatus','saving','adding to coffee grounds...');
@@ -806,7 +801,7 @@ function selectSweepEnergy(btn){
 
 // ── LIVE NOTION PULL ───────────────────────────────────────────
 async function loadSweepTasks(){
-  if(!getAK()){document.getElementById('setupOverlay').classList.remove('hidden');return}
+  
   const btn=document.getElementById('sweepLoadBtn');btn.disabled=true;
   document.getElementById('sweepLoadSpinner').classList.add('show');
   document.getElementById('sweepLoadLabel').textContent='pouring...';
