@@ -238,9 +238,9 @@ textarea{resize:vertical}
       <p class="setup-hint">From console.anthropic.com — handles AI sorting and Notion saves</p>
     </div>
     <div class="setup-field">
-      <label>Notion API Key <span style="opacity:.5;font-size:.75em;">(optional)</span></label>
+      <label>Notion API Key</label>
       <input type="password" id="setupNK" placeholder="secret_..." autocomplete="off"/>
-      <p class="setup-hint">Only needed if running outside Claude chat</p>
+      <p class="setup-hint">From notion.so/my-integrations — needed for all Notion reads and writes</p>
     </div>
     <button class="setup-btn" onclick="saveKeys()">pour it in &rarr;</button>
     <p class="setup-note">Keys disappear when you close the tab.</p>
@@ -550,40 +550,39 @@ function getNK(){return sessionStorage.getItem('cg_nk')||''}
 function saveKeys(){
   const ak=document.getElementById('setupAK').value.trim();
   if(!ak){showToast('add your Anthropic key');return}
-  sessionStorage.setItem('cg_ak',ak);
   const nk=document.getElementById('setupNK').value.trim();
-  if(nk)sessionStorage.setItem('cg_nk',nk);
+  if(!nk){showToast('add your Notion key too');return}
+  sessionStorage.setItem('cg_ak',ak);
+  sessionStorage.setItem('cg_nk',nk);
   document.getElementById('setupOverlay').classList.add('hidden');
   showToast("keys saved — let's go");
 }
 function initSetup(){
   const overlay=document.getElementById('setupOverlay');
-  if(inClaude&&getAK()){overlay.classList.add('hidden');return}
-  if(!inClaude&&getAK()&&getNK()){overlay.classList.add('hidden');return}
+  if(getAK()&&getNK()){overlay.classList.add('hidden');return}
 }
 document.querySelectorAll('.setup-field input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter')saveKeys()}));
 initSetup();
 
-async function callMCP(msg){
-  if(!getAK()){document.getElementById('setupOverlay').classList.remove('hidden');throw new Error('no API key');}
-  const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':getAK(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4000,mcp_servers:[{type:'url',url:'https://mcp.notion.com/mcp',name:'notion'}],system:'You are a Notion assistant. Use the Notion MCP tools to complete the request. When returning data, respond ONLY with a valid JSON array. No prose, no markdown fences.',messages:[{role:'user',content:msg}]})});
-  if(!res.ok)throw new Error('API error '+res.status);
-  const data=await res.json();
-  const text=data.content?.filter(b=>b.type==='text').map(b=>b.text).join('')||'';
-  if(!text)throw new Error('no response from Notion');
-  return text;
+function notionHeaders(){
+  if(!getNK()){document.getElementById('setupOverlay').classList.remove('hidden');throw new Error('Notion key needed — add it in setup');}
+  return{'Authorization':'Bearer '+getNK(),'Content-Type':'application/json','Notion-Version':NOTION_VERSION};
 }
-
+async function notionCreate(props){
+  const res=await fetch('https://api.notion.com/v1/pages',{method:'POST',headers:notionHeaders(),body:JSON.stringify({parent:{database_id:DB_ID},properties:props})});
+  if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.message||'Notion error '+res.status);}
+  return res.json();
+}
 async function notionUpdate(pageId,props){
-  if(getNK()){
-    const res=await fetch('https://api.notion.com/v1/pages/'+pageId,{method:'PATCH',headers:{'Authorization':'Bearer '+getNK(),'Content-Type':'application/json','Notion-Version':NOTION_VERSION},body:JSON.stringify({properties:props})});
-    if(!res.ok)throw new Error('Notion update error '+res.status);
-    return res.json();
-  }
-  const status=props?.status?.select?.name||'';
-  const dayToDay=props?.['day-to-day']?.checkbox;
-  await callMCP('Update Notion page '+pageId+': '+(status?'set status to '+status:'')+(dayToDay!==undefined?', set day-to-day to '+dayToDay:''));
-  return {id:pageId};
+  const res=await fetch('https://api.notion.com/v1/pages/'+pageId,{method:'PATCH',headers:notionHeaders(),body:JSON.stringify({properties:props})});
+  if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.message||'Notion update error '+res.status);}
+  return res.json();
+}
+async function notionQuery(filter,sorts){
+  const body={page_size:50};if(filter)body.filter=filter;if(sorts)body.sorts=sorts;
+  const res=await fetch('https://api.notion.com/v1/databases/'+DB_ID+'/query',{method:'POST',headers:notionHeaders(),body:JSON.stringify(body)});
+  if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.message||'Notion query error '+res.status);}
+  return res.json();
 }
 
 async function callAI(system,userMsg,maxTokens=1500){
@@ -717,9 +716,24 @@ async function saveDumpToNotion(){
   (dumpResult.someday||[]).forEach(t=>lines.push(`SOMEDAY | "${t}" | priority: Low | status: Brain Dump | bucket: someday`));
   if(!lines.length){showNotionStatus('dumpSaveStatus','error','no tasks to send');btn.disabled=false;document.getElementById('dumpSaveSpinner').classList.remove('show');document.getElementById('dumpSaveLabel').textContent='send to coffee grounds \u2192';return}
   try{
-    await callMCP('Add these tasks to Coffee Grounds (database '+DB_ID+'). For each: set status to To Do (except SOMEDAY = Brain Dump), area to admin, done to false. Use the priority, due date, bucket, and day-to-day values provided.\n\n'+lines.join('\n'));
-    showNotionStatus('dumpSaveStatus','saved',`${lines.length} task${lines.length>1?'s':''} added to Coffee Grounds \u2615`);showToast(lines.length+' tasks sent to Notion');
-  }catch(e){showNotionStatus('dumpSaveStatus','error','something went sideways \u2014 '+e.message);}
+    for(const line of lines){
+      const parts=line.split(' | ');
+      const bucket_val=parts.find(p=>p.startsWith('bucket:'))?.split(': ')[1]?.trim()||'';
+      const priority_val=parts.find(p=>p.startsWith('priority:'))?.split(': ')[1]?.trim()||'Medium';
+      const due_val=parts.find(p=>p.startsWith('due:'))?.split(': ')[1]?.trim()||'';
+      const dtd=line.includes('day-to-day: yes');
+      const isToday=line.startsWith('TODAY');
+      const isSomeday=line.startsWith('SOMEDAY');
+      const nameMatch=line.match(/"([^"]+)"/);
+      const name=nameMatch?nameMatch[1]:'untitled';
+      const props={task:{title:[{text:{content:name}}]},status:{select:{name:isSomeday?'Brain Dump':'To Do'}},priority:{select:{name:priority_val}}};
+      if(bucket_val)props.bucket={select:{name:bucket_val}};
+      if(due_val)props.due={date:{start:due_val}};
+      if(dtd)props['day-to-day']={checkbox:true};
+      await notionCreate(props);
+    }
+    showNotionStatus('dumpSaveStatus','saved',`${lines.length} task${lines.length>1?'s':''} added to Coffee Grounds ☕`);showToast(lines.length+' tasks sent to Notion');
+  }catch(e){showNotionStatus('dumpSaveStatus','error','something went sideways — '+e.message);}
   btn.disabled=false;document.getElementById('dumpSaveSpinner').classList.remove('show');document.getElementById('dumpSaveLabel').textContent='send to coffee grounds \u2192';
 }
 
@@ -736,8 +750,16 @@ async function addTask(){
   const notes=document.getElementById('newNotes').value.trim();
   const dayToDay=document.getElementById('newDayToDay').checked;const contentRelated=document.getElementById('newContentRelated').checked;
   try{
-    await callMCP(`Add this task to Coffee Grounds (database ${DB_ID}): "${task}" | status: ${status||'To Do'} | priority: ${priority||'Medium'}${area?' | area: '+area:''}${bucket?' | bucket: '+bucket:''}${due?' | due: '+due:''}${phase?' | phase: '+phase:''}${notes?' | notes: '+notes:''} | day-to-day: ${dayToDay?'yes':'no'} | content related: ${contentRelated?'yes':'no'}`);
-    showNotionStatus('addStatus','saved','added to coffee grounds \u2615');showToast('task added');
+    const props={task:{title:[{text:{content:task}}]},status:{select:{name:status||'To Do'}},priority:{select:{name:priority||'Medium'}}};
+    if(area)props.area={select:{name:area}};
+    if(bucket)props.bucket={select:{name:bucket}};
+    if(due)props.due={date:{start:due}};
+    if(phase)props.phase={select:{name:phase}};
+    if(notes)props.notes={rich_text:[{text:{content:notes}}]};
+    if(dayToDay)props['day-to-day']={checkbox:true};
+    if(contentRelated)props['content related']={checkbox:true};
+    await notionCreate(props);
+    showNotionStatus('addStatus','saved','added to coffee grounds ☕');showToast('task added');
     document.getElementById('newTask').value='';document.getElementById('newNotes').value='';document.getElementById('newDue').value='';
     document.getElementById('newDayToDay').checked=false;document.getElementById('newContentRelated').checked=false;
   }catch(e){showNotionStatus('addStatus','error','couldn\'t add \u2014 '+e.message)}
@@ -819,11 +841,16 @@ async function loadSweepTasks(){
   const sunday=new Date(monday);sunday.setDate(monday.getDate()+6);
   const fmt=d=>d.toISOString().split('T')[0];
   try{
-    const result=await callMCP(`Use the Notion API to query database ${DB_ID}. Filter: status is not Done and not On Hold, and either (bucket is "daily brew" and day-to-day is true) OR (bucket is "daily brew" and due date is between ${fmt(monday)} and ${fmt(sunday)}). For each result extract: id, task name, priority, area, due date, day-to-day. Return ONLY a raw JSON array like [{"id":"...","task":"...","priority":"...","area":"...","due":"...","dayToDay":true}]. No text before or after. No markdown. Just the JSON array starting with [`);
-    const match=result.match(/\[[\s\S]*\]/);
-    if(!match)throw new Error('no task data returned');
-    const parsed=JSON.parse(match[0]);
-    sweepLiveTasks=Array.isArray(parsed)?parsed:[];
+    const filter={or:[{and:[{property:'bucket',select:{equals:'daily brew'}},{property:'day-to-day',checkbox:{equals:true}},{property:'status',select:{does_not_equal:'Done'}},{property:'status',select:{does_not_equal:'On Hold'}}]},{and:[{property:'bucket',select:{equals:'daily brew'}},{property:'due',date:{on_or_after:fmt(monday)}},{property:'due',date:{on_or_before:fmt(sunday)}},{property:'status',select:{does_not_equal:'Done'}},{property:'status',select:{does_not_equal:'On Hold'}}]}]};
+    const data=await notionQuery(filter);
+    sweepLiveTasks=(data.results||[]).map(p=>({
+      id:p.id,
+      task:p.properties?.task?.title?.[0]?.plain_text||'untitled',
+      priority:p.properties?.priority?.select?.name||'',
+      area:p.properties?.area?.select?.name||'',
+      due:p.properties?.due?.date?.start||'',
+      dayToDay:p.properties?.['day-to-day']?.checkbox||false
+    }));
     renderSweepLive();
     document.getElementById('sweepLoadStatus').className='status-msg';
     document.getElementById('sweepRefreshBtn').style.display='inline-flex';
