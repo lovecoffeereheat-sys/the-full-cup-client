@@ -573,7 +573,11 @@ async function notionQuery(filter,sorts){
 }
 
 async function callAI(system,userMsg,maxTokens=1500){
-  const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':getAK(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:maxTokens,system,messages:[{role:'user',content:userMsg}]})});
+  const res=await fetch('/.netlify/functions/claude-proxy',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({system,userMsg,maxTokens})
+  });
   if(!res.ok)throw new Error('API error '+res.status);
   const data=await res.json();
   return data.content?.map(b=>b.text||'').join('')||'';
