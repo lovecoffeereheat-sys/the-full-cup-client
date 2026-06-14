@@ -666,34 +666,6 @@ async function saveDumpToNotion(){
   btn.disabled=false;document.getElementById('dumpSaveSpinner').classList.remove('show');document.getElementById('dumpSaveLabel').textContent='send to coffee grounds \u2192';
 }
 
-async function addTask(){
-  const task=document.getElementById('newTask').value.trim();
-  if(!task){showToast('add a task name first');return}
-  
-  const btn=document.getElementById('addBtn');btn.disabled=true;
-  document.getElementById('addSpinner').classList.add('show');document.getElementById('addLabel').textContent='adding...';
-  showNotionStatus('addStatus','saving','adding to coffee grounds...');
-  const status=document.getElementById('newStatus').value;const priority=document.getElementById('newPriority').value;
-  const area=document.getElementById('newArea').value;const bucket=document.getElementById('newBucket').value;
-  const due=document.getElementById('newDue').value;const phase=document.getElementById('newPhase').value;
-  const notes=document.getElementById('newNotes').value.trim();
-  const dayToDay=document.getElementById('newDayToDay').checked;const contentRelated=document.getElementById('newContentRelated').checked;
-  try{
-    const props={task:{title:[{text:{content:task}}]},status:{select:{name:status||'To Do'}},priority:{select:{name:priority||'Medium'}}};
-    if(area)props.area={select:{name:area}};
-    if(bucket)props.bucket={select:{name:bucket}};
-    if(due)props.due={date:{start:due}};
-    if(phase)props.phase={select:{name:phase}};
-    if(notes)props.notes={rich_text:[{text:{content:notes}}]};
-    if(dayToDay)props['day-to-day']={checkbox:true};
-    if(contentRelated)props['content related']={checkbox:true};
-    await notionCreate(props);
-    showNotionStatus('addStatus','saved','added to coffee grounds ☕');showToast('task added');
-    document.getElementById('newTask').value='';document.getElementById('newNotes').value='';document.getElementById('newDue').value='';
-    document.getElementById('newDayToDay').checked=false;document.getElementById('newContentRelated').checked=false;
-  }catch(e){showNotionStatus('addStatus','error','couldn\'t add \u2014 '+e.message)}
-  btn.disabled=false;document.getElementById('addSpinner').classList.remove('show');document.getElementById('addLabel').textContent='add to coffee grounds \u2192';
-}
 
 // ── WEEKLY SWEEP ───────────────────────────────────────────────
 const sweepSections={
