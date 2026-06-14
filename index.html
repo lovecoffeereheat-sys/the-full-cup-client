@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Full Cup — Bottom of the Cup</title>
+<title>The Full Cup — Coffee & Conditions</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -18,24 +18,6 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Lora',Georgia,serif;background:var(--rose-paler);color:var(--ink);min-height:100vh}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.02'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.4}
-
-/* SETUP */
-.setup-overlay{position:fixed;inset:0;background:var(--rose-paler);z-index:200;display:flex;align-items:center;justify-content:center;padding:2rem}
-.setup-overlay.hidden{display:none}
-.setup-box{background:white;border:1px solid var(--rose-border);border-radius:12px;padding:2.5rem 2rem;max-width:460px;width:100%;text-align:center;box-shadow:0 4px 30px rgba(148,78,99,.1)}
-.setup-eyebrow{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--coffee-light);margin-bottom:.5rem}
-.setup-title{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--rose-deep);margin-bottom:.35rem}
-.setup-title em{color:var(--rose-mid);font-style:italic}
-.setup-sub{font-family:'Lora',serif;font-style:italic;font-size:.82rem;color:var(--rose-soft);margin-bottom:1.75rem;line-height:1.6}
-.setup-field{margin-bottom:.85rem;text-align:left}
-.setup-field label{display:block;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--rose-mid);margin-bottom:.35rem}
-.setup-field input{width:100%;background:var(--rose-paler);border:1px solid var(--rose-border);border-radius:5px;padding:.68rem 1rem;font-family:'Lora',serif;font-size:.85rem;color:var(--ink);outline:none;transition:border-color .2s}
-.setup-field input::placeholder{color:var(--rose-soft);font-style:italic}
-.setup-field input:focus{border-color:var(--rose-mid)}
-.setup-hint{font-size:.6rem;color:var(--rose-soft);margin-top:.28rem;font-style:italic}
-.setup-btn{width:100%;background:var(--rose-deep);color:white;border:none;border-radius:5px;padding:.82rem 2rem;font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;margin-top:1rem;transition:background .2s}
-.setup-btn:hover{background:var(--navy)}
-.setup-note{font-size:.6rem;color:var(--rose-soft);margin-top:.85rem;line-height:1.65}
 
 /* LAYOUT */
 .app{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:52px 28px 96px}
@@ -64,7 +46,6 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .tab{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;padding:8px 16px;border-radius:4px;cursor:pointer;border:1px solid var(--rose-border);background:white;color:var(--rose-mid);transition:all .15s}
 .tab:hover{border-color:var(--rose-mid);color:var(--rose-deep)}
 .tab.active{background:var(--rose-deep);border-color:var(--rose-deep);color:white}
-.tab.sweep-tab.active{background:var(--rose-deep);border-color:var(--rose-deep);color:white}
 
 /* PANELS */
 .panel{display:none}
@@ -89,10 +70,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 input[type="text"],input[type="date"],select,textarea{font-family:'Lora',serif;font-size:.83rem;color:var(--ink);background:var(--rose-paler);border:1px solid var(--rose-border);border-radius:4px;padding:8px 12px;width:100%;outline:none;transition:border-color .18s;line-height:1.5}
 input[type="text"]:focus,input[type="date"]:focus,select:focus,textarea:focus{border-color:var(--rose-mid)}
 input::placeholder,textarea::placeholder{color:var(--rose-soft);font-style:italic}
-select{cursor:pointer;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23b47b84'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
 textarea{resize:vertical}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
-.form-full{margin-bottom:10px}
 .sweep-input{font-family:'Lora',serif;font-size:.88rem;font-style:italic;color:var(--ink);background:var(--rose-paler);border:1px solid var(--rose-border);border-radius:5px;padding:10px 14px;width:100%;outline:none;resize:none;line-height:1.6;transition:border-color .18s}
 .sweep-input:focus{border-color:var(--rose-mid)}
 .sweep-input::placeholder{color:var(--rose-soft);font-style:italic}
@@ -106,8 +84,6 @@ textarea{resize:vertical}
 .btn-blush:hover{border-color:var(--rose-mid);color:var(--rose-deep)}
 .btn-rose{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;padding:12px 22px;background:var(--rose-deep);color:white;border:none;border-radius:5px;cursor:pointer;transition:all .18s;display:inline-flex;align-items:center;gap:8px}
 .btn-rose:hover{background:var(--navy)}
-.btn-notion{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;padding:12px 22px;background:var(--navy);color:white;border:none;border-radius:5px;cursor:pointer;transition:all .18s;display:inline-flex;align-items:center;gap:8px}
-.btn-notion:hover{background:#000}.btn-notion:disabled{opacity:.5;cursor:not-allowed}
 .btn-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:18px}
 .spinner-sm{width:12px;height:12px;border:2px solid rgba(245,234,216,.3);border-top-color:var(--gold-pale);border-radius:50%;animation:spin .7s linear infinite;display:none}
 .spinner-sm.show{display:block}
@@ -116,15 +92,7 @@ textarea{resize:vertical}
 /* STATUS */
 .status-msg{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.12em;padding:9px 13px;border-radius:4px;margin-top:10px;display:none}
 .status-msg.show{display:flex;align-items:center;gap:8px}
-.status-msg.success{background:var(--success-bg);color:var(--success-color);border:1px solid var(--success-border)}
 .status-msg.error{background:var(--error-bg);color:var(--error-color);border:1px solid var(--error-border)}
-.status-msg.loading{background:rgba(148,78,99,.06);color:var(--rose-mid);border:1px solid rgba(148,78,99,.2)}
-.notion-status{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.12em;padding:9px 14px;border-radius:4px;display:none;margin-top:10px}
-.notion-status.show{display:flex;align-items:center;gap:8px}
-.notion-status.saved{background:var(--success-bg);color:var(--success-color);border:1px solid var(--success-border)}
-.notion-status.saving{background:rgba(148,78,99,.06);color:var(--rose-mid);border:1px solid rgba(148,78,99,.2)}
-.notion-status.error{background:var(--error-bg);color:var(--error-color);border:1px solid var(--error-border)}
-.notion-link{color:inherit;font-weight:500}
 
 /* ENERGY CHIPS */
 .energy-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
@@ -146,24 +114,9 @@ textarea{resize:vertical}
 .bucket-note{font-family:'Lora',serif;font-style:italic;font-size:.78rem;color:var(--rose-soft);margin-bottom:10px;line-height:1.5}
 
 /* TASK ROWS */
-.task-row{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:6px;margin-bottom:6px;background:var(--rose-paler);border:1px solid var(--rose-border);transition:all .15s;cursor:pointer}
-.task-row:hover{border-color:var(--rose-mid);background:var(--rose-pale)}
-.task-row.selected{border-color:var(--rose-deep);background:var(--rose-pale)}
-.task-check{width:16px;height:16px;border:1.5px solid var(--border);border-radius:3px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:all .15s}
-.task-row.selected .task-check{background:var(--rose-deep);border-color:var(--rose-deep)}
-.task-check-inner{width:8px;height:8px;background:white;border-radius:1px;display:none}
-.task-row.selected .task-check-inner{display:block}
+.task-row{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:6px;margin-bottom:6px;background:var(--rose-paler);border:1px solid var(--rose-border);transition:all .15s}
 .task-body{flex:1;min-width:0}
-.task-name{font-family:'Lora',serif;font-size:.85rem;color:var(--ink);line-height:1.45;margin-bottom:3px}
-.task-meta{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
-.tag{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.12em;text-transform:uppercase;padding:2px 7px;border-radius:2px}
-.tag-high{background:rgba(148,78,99,.1);color:var(--rose-deep)}
-.tag-medium{background:rgba(90,58,114,.1);color:var(--navy-mid)}
-.tag-low{background:rgba(107,76,53,.1);color:var(--coffee)}
-.tag-status{background:rgba(107,76,53,.08);color:var(--coffee)}
-.tag-area{background:rgba(201,152,74,.12);color:#8a6020}
-.tag-due{background:rgba(148,78,99,.08);color:var(--rose-deep)}
-.tag-overdue{background:rgba(148,78,99,.18);color:var(--rose-deep);font-weight:500}
+.task-name{font-family:'Lora',serif;font-size:.85rem;color:var(--ink);line-height:1.45}
 
 /* WEEKLY SPREAD */
 .spread-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px}
@@ -178,14 +131,7 @@ textarea{resize:vertical}
 .spread-day.today-col{border-color:var(--gold);background:var(--gold-pale)}
 .spread-day.today-col .spread-day-name{color:var(--gold)}
 
-/* ADD FORM */
-.add-form{background:var(--rose-paler);border:1px solid var(--rose-border);border-radius:8px;padding:18px 20px;margin-bottom:14px}
-.add-form-title{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--rose-mid);margin-bottom:14px}
-.checkbox-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.checkbox-row input[type="checkbox"]{width:15px;height:15px;accent-color:var(--rose-deep);cursor:pointer}
-.checkbox-row label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--rose-mid);cursor:pointer}
-
-/* WEEKLY SWEEP CHECKLIST */
+/* WEEKLY SWEEP */
 .sweep-section-header{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--rose-mid);margin-bottom:10px;display:flex;align-items:center;gap:8px}
 .sweep-section-header::after{content:'';flex:1;height:1px;background:var(--rose-border)}
 .sweep-section-wrap{margin-bottom:20px}
@@ -195,7 +141,7 @@ textarea{resize:vertical}
 .sweep-item.sw-dimmed{opacity:.22;pointer-events:none}
 .sweep-dot{width:7px;height:7px;border-radius:50%;background:var(--rose-border);flex-shrink:0;transition:all .2s}
 .sweep-item.sw-on .sweep-dot{background:var(--rose-deep);transform:scale(1.3)}
-.sweep-text{font-family:'Lora',serif;font-size:.85rem;color:var(--rose-soft);line-height:1.45;flex:1;transition:all .2s;font-weight:400}
+.sweep-text{font-family:'Lora',serif;font-size:.85rem;color:var(--rose-soft);line-height:1.45;flex:1;transition:all .2s}
 .sweep-item.sw-on .sweep-text{color:var(--rose-deep);font-weight:500}
 
 /* PROGRESS */
@@ -224,14 +170,13 @@ textarea{resize:vertical}
 </head>
 <body>
 
-
 <div class="app">
   <header class="header">
     <div class="cup-wrap">
       <div class="steam"><div class="wisp"></div><div class="wisp"></div><div class="wisp"></div></div>
       <div class="cup-body"></div><div class="cup-handle"></div><div class="cup-saucer"></div>
     </div>
-    <p class="eyebrow">Bottom of the Cup</p>
+    <p class="eyebrow">Coffee & Conditions</p>
     <h1><em>The Full Cup</em></h1>
     <p class="header-sub">What actually needs to happen today. What can steep a little longer.</p>
     <div class="header-rule"></div>
@@ -239,7 +184,7 @@ textarea{resize:vertical}
 
   <div class="tabs">
     <button class="tab active" onclick="switchPanel('dump',this)">&#9749; brain dump</button>
-    <button class="tab sweep-tab" onclick="switchPanel('sweep',this)">&#127800; weekly sweep</button>
+    <button class="tab" onclick="switchPanel('sweep',this)">&#127800; weekly sweep</button>
   </div>
 
   <!-- BRAIN DUMP PANEL -->
@@ -310,6 +255,17 @@ textarea{resize:vertical}
             <div id="dumpLaterMonthList"></div>
           </div>
         </div>
+        <div id="dumpSomedayWrap">
+          <div class="divider"></div>
+          <div class="bucket-section">
+            <div class="bucket-header">
+              <div class="bucket-dot" style="background:var(--border)"></div>
+              <span class="bucket-label">someday <span class="bucket-count" id="dumpSomedayCount"></span></span>
+            </div>
+            <p class="bucket-note" style="font-family:'Lora',serif;font-style:italic;font-size:.78rem;color:var(--coffee-light);margin-bottom:10px;">good ideas without a deadline &#8212; let them breathe</p>
+            <div id="dumpSomedayList"></div>
+          </div>
+        </div>
       </div>
 
       <div id="spreadWrap" style="display:none;">
@@ -328,18 +284,8 @@ textarea{resize:vertical}
         </div>
       </div>
 
-      <div id="dumpSomedayWrap">
-        <div class="divider"></div>
-        <div class="bucket-section">
-          <div class="bucket-header">
-            <div class="bucket-dot" style="background:var(--border)"></div>
-            <span class="bucket-label">someday <span class="bucket-count" id="dumpSomedayCount"></span></span>
-          </div>
-          <p class="bucket-note" style="font-family:'Lora',serif;font-style:italic;font-size:.78rem;color:var(--coffee-light);margin-bottom:10px;">good ideas without a deadline &#8212; let them breathe</p>
-          <div id="dumpSomedayList"></div>
-        </div>
-      </div>
-          <button class="btn-secondary" onclick="resetDump()">start over</button>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="resetDump()">start over</button>
       </div>
     </div>
   </div>
@@ -347,7 +293,6 @@ textarea{resize:vertical}
   <!-- WEEKLY SWEEP PANEL -->
   <div class="panel" id="panel-sweep">
 
-    <!-- ENERGY + INTENTION -->
     <div class="card-blush">
       <p class="section-eyebrow-blush">Before you begin</p>
       <h2 class="section-title">Check the <em>temperature</em></h2>
@@ -366,10 +311,6 @@ textarea{resize:vertical}
       <textarea class="sweep-input" id="sweepIntention" rows="2" placeholder="what does this week want to be about..."></textarea>
     </div>
 
-  
-      
-
-    <!-- RECURRING RHYTHM -->
     <div class="card-blush">
       <p class="section-eyebrow-blush">The rhythm</p>
       <h2 class="section-title">Recurring <em>weekly prompts</em></h2>
@@ -399,19 +340,17 @@ textarea{resize:vertical}
       </div>
     </div>
 
-    <!-- NOTES -->
     <div class="card-blush">
       <p class="section-eyebrow-blush">The grounds</p>
       <h2 class="section-title">Anything the sweep <em>surfaced</em></h2>
       <div class="divider-blush"></div>
-      <label class="field-label-blush" style="margin-bottom:8px;">notes, things to add to Coffee Grounds, reminders</label>
+      <label class="field-label-blush" style="margin-bottom:8px;">notes, reminders, things that came up</label>
       <textarea class="sweep-input" id="sweepNotes" rows="4" placeholder="pour it out here..."></textarea>
       <div class="btn-row">
         <button class="btn-rose" onclick="copySweepNotes()">copy notes &rarr;</button>
       </div>
     </div>
 
-    <!-- COMPLETE -->
     <div class="sweep-complete" id="sweepComplete">
       <div style="font-size:2rem;margin-bottom:12px;">&#9749;</div>
       <h2 class="sweep-complete-title" id="sweepCompleteTitle"></h2>
@@ -421,16 +360,12 @@ textarea{resize:vertical}
 
   </div>
 
-  <p class="footer">The Full Cup &middot; <a href="https://bottomcup.substack.com" target="_blank">Bottom of the Cup</a></p>
+  <p class="footer">The Full Cup &middot; <a href="https://coffeeandconditions.com" target="_blank">Coffee &amp; Conditions</a></p>
 </div>
 
 <div class="toast" id="toast"></div>
 
-
-
-
-
-
+<script>
 async function callAI(system,userMsg,maxTokens=1500){
   const res=await fetch('/.netlify/functions/claude-proxy',{
     method:'POST',
@@ -450,26 +385,36 @@ function switchPanel(id,btn){
 }
 
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
-function setStatus(id,type,msg){const el=document.getElementById(id);el.className='status-msg show '+type;el.textContent=msg}
-function showNotionStatus(id,type,html){const el=document.getElementById(id);el.className='notion-status show '+type;el.innerHTML=html}
+function setStatus(id,type,msg){const el=document.getElementById(id);el.className='status-msg show '+type;el.textContent=msg;}
 
 let dumpEnergy='half',dumpTimeframe='today',dumpResult=null,spreadResult=null;
-function selectEnergy(btn){document.querySelectorAll('#dumpEnergy .energy-chip').forEach(c=>c.classList.remove('on'));btn.classList.add('on');dumpEnergy=btn.dataset.val;}
-function selectTimeframe(btn){document.querySelectorAll('#dumpTimeframe .energy-chip').forEach(c=>c.classList.remove('on'));btn.classList.add('on');dumpTimeframe=btn.dataset.val;document.getElementById('spreadWrap').style.display='none';}
+
+function selectEnergy(btn){
+  document.querySelectorAll('#dumpEnergy .energy-chip').forEach(c=>c.classList.remove('on'));
+  btn.classList.add('on');
+  dumpEnergy=btn.dataset.val;
+}
+
+function selectTimeframe(btn){
+  document.querySelectorAll('#dumpTimeframe .energy-chip').forEach(c=>c.classList.remove('on'));
+  btn.classList.add('on');
+  dumpTimeframe=btn.dataset.val;
+  document.getElementById('spreadWrap').style.display='none';
+}
 
 async function runDump(){
   const raw=document.getElementById('dumpText').value.trim();
-  if(!raw){showToast('add at least one thing first');return}
-  
+  if(!raw){showToast('add at least one thing first');return;}
   const items=raw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
-  if(!items.length){showToast('nothing to sort');return}
-  const btn=document.getElementById('dumpBtn');btn.disabled=true;
+  if(!items.length){showToast('nothing to sort');return;}
+  const btn=document.getElementById('dumpBtn');
+  btn.disabled=true;
   document.getElementById('dumpSpinner').classList.add('show');
   document.getElementById('dumpLabel').textContent='steeping...';
   document.getElementById('dumpOutput').style.display='none';
   const energyContext={empty:'nearly empty — absolute minimum today, 1-2 things max',half:'half a cup — 2-3 things today is plenty',full:'fresh pour — 4-5 things today but stop there',unpredictable:'unpredictable — plan for less than you think you can do'};
   const timeframeNote=dumpTimeframe==='week'?'Also identify items for later this week (not today but this week).':'Focus on today only — everything else goes to can-wait.';
-  const sys=`You are a gentle, honest task sorter for Grace — a midlife woman with a variable energy body and chronic illness. You understand that doing less on purpose is a real strategy, not failure.\n\nEnergy today: ${energyContext[dumpEnergy]||energyContext.half}\n${timeframeNote}\n\nSort these items into four buckets:\n- "today": ${dumpEnergy==='empty'?'1-2':dumpEnergy==='full'?'up to 4':'2-3'} items maximum. Urgent things with real deadlines, body/health/rest needs (HIGH priority, protect energy), things that genuinely can't wait.\n- "later_week": ${dumpTimeframe==='today'?'empty array — timeframe is today only':'real things that could happen this week if energy allows. 2-4 items. Flexible, not urgent.'}\n- "later_month": things worth keeping but no urgency this week. On the burner, steeping. 2-5 items.\n- "someday": everything else — good ideas, no deadline, things that can breathe indefinitely\n\nReturn ONLY valid JSON: {"today":["item"],"later_week":["item"],"later_month":["item"],"someday":["item"],"strategy_note":"one warm honest sentence about this list and today's energy — Grace's voice, wry and specific, under 25 words"}\n\nBe honest about limits. A half-cup day with 20 tasks is not a failure — it's Tuesday.`;
+  const sys=`You are a gentle, honest task sorter for a midlife woman with variable energy. You understand that doing less on purpose is a real strategy, not failure.\n\nEnergy today: ${energyContext[dumpEnergy]||energyContext.half}\n${timeframeNote}\n\nSort these items into four buckets:\n- "today": ${dumpEnergy==='empty'?'1-2':dumpEnergy==='full'?'up to 4':'2-3'} items maximum. Urgent things with real deadlines, body/health/rest needs, things that genuinely can't wait.\n- "later_week": ${dumpTimeframe==='today'?'empty array — timeframe is today only':'real things that could happen this week if energy allows. 2-4 items.'}\n- "later_month": things worth keeping but no urgency this week. 2-5 items.\n- "someday": everything else — good ideas, no deadline, things that can breathe\n\nReturn ONLY valid JSON: {"today":["item"],"later_week":["item"],"later_month":["item"],"someday":["item"],"strategy_note":"one warm honest sentence about this list and today's energy, wry and specific, under 25 words"}\n\nBe honest about limits. A half-cup day with 20 tasks is not a failure — it's Tuesday.`;
   try{
     const raw2=await callAI(sys,items.map((i,n)=>`${n+1}. ${i}`).join('\n'));
     const parsed=JSON.parse(raw2.replace(/```json|```/g,'').trim());
@@ -480,7 +425,9 @@ async function runDump(){
     if(dumpTimeframe==='week'&&dumpResult.later_week.length>0){await buildSpread(dumpResult.later_week);}
     else{document.getElementById('spreadWrap').style.display='none';}
   }catch(e){setStatus('dumpStatus','error','something went sideways — '+e.message);}
-  btn.disabled=false;document.getElementById('dumpSpinner').classList.remove('show');document.getElementById('dumpLabel').textContent='help me sort this \u2192';
+  btn.disabled=false;
+  document.getElementById('dumpSpinner').classList.remove('show');
+  document.getElementById('dumpLabel').textContent='help me sort this \u2192';
 }
 
 function renderDumpOutput(today,later_week,later_month,someday,note){
@@ -503,8 +450,8 @@ function renderDumpOutput(today,later_week,later_month,someday,note){
 
 function renderDumpList(containerId,items,bucket){
   const el=document.getElementById(containerId);
-  if(!items||!items.length){el.innerHTML='<p style="font-family:\'DM Mono\',monospace;font-size:8px;color:var(--coffee-light);padding:8px 0;">nothing here</p>';return}
-  el.innerHTML=items.map(item=>`<div class="task-row" style="margin-bottom:6px;cursor:default;"><div class="task-body" style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><span class="task-name">${escHtml(item)}</span><div style="display:flex;gap:5px;flex-shrink:0;">${bucket!=='today'?`<button onclick="moveDumpItem('${escJs(item)}','${bucket}','today')" class="btn-secondary" style="padding:3px 8px;font-size:7px;" title="today">\u2615</button>`:''}${bucket!=='later_week'?`<button onclick="moveDumpItem('${escJs(item)}','${bucket}','later_week')" class="btn-secondary" style="padding:3px 8px;font-size:7px;" title="later this week">\uD83E\uDED6</button>`:''}${bucket!=='later_month'?`<button onclick="moveDumpItem('${escJs(item)}','${bucket}','later_month')" class="btn-secondary" style="padding:3px 8px;font-size:7px;" title="later this month">\uD83D\uDCC5</button>`:''}${bucket!=='someday'?`<button onclick="moveDumpItem('${escJs(item)}','${bucket}','someday')" class="btn-secondary" style="padding:3px 8px;font-size:7px;" title="someday">\uD83E\uDDCA</button>`:''}` +'</div></div></div>').join('');
+  if(!items||!items.length){el.innerHTML='<p style="font-family:\'DM Mono\',monospace;font-size:8px;color:var(--coffee-light);padding:8px 0;">nothing here</p>';return;}
+  el.innerHTML=items.map(item=>`<div class="task-row" style="margin-bottom:6px;"><div class="task-body" style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><span class="task-name">${escHtml(item)}</span><div style="display:flex;gap:5px;flex-shrink:0;">${bucket!=='today'?`<button onclick="moveDumpItem('${escJs(item)}','${bucket}','today')" class="btn-secondary" style="padding:3px 8px;font-size:7px;" title="today">\u2615</button>`:''} ${bucket!=='later_week'?`<button onclick="moveDumpItem('${escJs(item)}','${bucket}','later_week')" class="btn-secondary" style="padding:3px 8px;font-size:7px;" title="later this week">\uD83E\uDED6</button>`:''} ${bucket!=='later_month'?`<button onclick="moveDumpItem('${escJs(item)}','${bucket}','later_month')" class="btn-secondary" style="padding:3px 8px;font-size:7px;" title="later this month">\uD83D\uDCC5</button>`:''} ${bucket!=='someday'?`<button onclick="moveDumpItem('${escJs(item)}','${bucket}','someday')" class="btn-secondary" style="padding:3px 8px;font-size:7px;" title="someday">\uD83E\uDDCA</button>`:''}</div></div></div>`).join('');
 }
 
 function moveDumpItem(item,from,to){
@@ -517,42 +464,59 @@ function moveDumpItem(item,from,to){
   if(dumpTimeframe==='week'&&dumpResult.later_week.length>0)buildSpread(dumpResult.later_week);
 }
 
-function resetDump(){document.getElementById('dumpText').value='';document.getElementById('dumpOutput').style.display='none';document.getElementById('spreadWrap').style.display='none';dumpResult=null;spreadResult=null;}
+function resetDump(){
+  document.getElementById('dumpText').value='';
+  document.getElementById('dumpOutput').style.display='none';
+  document.getElementById('spreadWrap').style.display='none';
+  dumpResult=null;
+  spreadResult=null;
+}
 
 async function buildSpread(weekItems){
-  if(!weekItems.length){document.getElementById('spreadWrap').style.display='none';return}
-  const today=new Date();const todayName=today.toLocaleDateString('en-CA',{weekday:'long'});
-  const days=['Monday','Tuesday','Wednesday','Thursday','Friday'];const dayDates={};
-  days.forEach(d=>{const diff=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'].indexOf(d)-today.getDay();const date=new Date(today);date.setDate(today.getDate()+(diff<=0?diff+7:diff));dayDates[d]=date.toISOString().split('T')[0];});
+  if(!weekItems.length){document.getElementById('spreadWrap').style.display='none';return;}
+  const today=new Date();
+  const todayName=today.toLocaleDateString('en-CA',{weekday:'long'});
+  const days=['Monday','Tuesday','Wednesday','Thursday','Friday'];
+  const dayDates={};
+  days.forEach(d=>{
+    const diff=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'].indexOf(d)-today.getDay();
+    const date=new Date(today);
+    date.setDate(today.getDate()+(diff<=0?diff+7:diff));
+    dayDates[d]=date.toISOString().split('T')[0];
+  });
   const energyLoad={empty:'1 item max per day',half:'1-2 items per day',full:'2-3 items per day',unpredictable:'1 item per day'};
-  const sys=`You are placing tasks across a work week for Grace — a midlife woman with variable energy. Today is ${todayName}.\nEnergy: ${energyLoad[dumpEnergy]||energyLoad.half}\nDays available: ${days.join(', ')}\nPlace each item on the most suitable day. Heavier creative or building tasks go on higher-energy early-week days. Admin, small things, and self-care go on lighter days or Fridays. Anything that genuinely doesn't fit this week goes in "overflow".\nReturn ONLY valid JSON: {"spread":{"Monday":["item"],"Tuesday":["item"],"Wednesday":["item"],"Thursday":["item"],"Friday":["item"]},"overflow":["item"]}`;
+  const sys=`You are placing tasks across a work week for a midlife woman with variable energy. Today is ${todayName}.\nEnergy: ${energyLoad[dumpEnergy]||energyLoad.half}\nDays available: ${days.join(', ')}\nPlace each item on the most suitable day. Heavier tasks go early in the week. Admin and self-care go later. Anything that doesn't fit goes in "overflow".\nReturn ONLY valid JSON: {"spread":{"Monday":["item"],"Tuesday":["item"],"Wednesday":["item"],"Thursday":["item"],"Friday":["item"]},"overflow":["item"]}`;
   try{
     const raw=await callAI(sys,weekItems.map((i,n)=>`${n+1}. ${i}`).join('\n'));
     const parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());
-    spreadResult={spread:parsed.spread||{},overflow:parsed.overflow||[],dayDates};renderSpread(spreadResult);
+    spreadResult={spread:parsed.spread||{},overflow:parsed.overflow||[],dayDates};
+    renderSpread(spreadResult);
   }catch(e){document.getElementById('spreadWrap').style.display='none';}
 }
 
 function renderSpread(sr){
   const today=new Date().toLocaleDateString('en-CA',{weekday:'long'});
-  const grid=document.getElementById('spreadGrid');grid.innerHTML='';
+  const grid=document.getElementById('spreadGrid');
+  grid.innerHTML='';
   ['Monday','Tuesday','Wednesday','Thursday','Friday'].forEach(day=>{
-    const items=sr.spread[day]||[];const isToday=day===today;
-    const div=document.createElement('div');div.className='spread-day'+(isToday?' today-col':'');
+    const items=sr.spread[day]||[];
+    const isToday=day===today;
+    const div=document.createElement('div');
+    div.className='spread-day'+(isToday?' today-col':'');
     div.innerHTML=`<p class="spread-day-name">${day}${isToday?' \u2014 today':''}</p><div class="spread-day-items">${items.map(item=>`<div class="spread-item"><span class="spread-item-text">${escHtml(item)}</span></div>`).join('')||'<p style="font-family:\'DM Mono\',monospace;font-size:7px;color:var(--border);padding:4px 0;">rest day</p>'}</div>`;
     grid.appendChild(div);
   });
   const overflowWrap=document.getElementById('spreadOverflowWrap');
-  if(sr.overflow&&sr.overflow.length){document.getElementById('spreadOverflow').innerHTML=sr.overflow.map(item=>`<div class="spread-item"><span class="spread-item-text">${escHtml(item)}</span></div>`).join('');overflowWrap.style.display='block';}
-  else{overflowWrap.style.display='none'}
+  if(sr.overflow&&sr.overflow.length){
+    document.getElementById('spreadOverflow').innerHTML=sr.overflow.map(item=>`<div class="spread-item"><span class="spread-item-text">${escHtml(item)}</span></div>`).join('');
+    overflowWrap.style.display='block';
+  }else{overflowWrap.style.display='none';}
   document.getElementById('spreadWrap').style.display='block';
   const energyDesc={empty:'cold cup',half:'half a cup',full:'fresh pour',unpredictable:'unpredictable'};
   document.getElementById('spreadSub').textContent=`${energyDesc[dumpEnergy]||'half a cup'} energy week \u2014 rough placement. Move anything that doesn't feel right.`;
 }
 
-
-
-// ── WEEKLY SWEEP ───────────────────────────────────────────────
+// ── WEEKLY SWEEP ──────────────────────────────────────────────
 const sweepSections={
   body:[
     {id:'meal-plan',text:'Meal plan for the week',energy:['half','full']},
@@ -583,13 +547,17 @@ const sweepSections={
 let sweepEnergy='half',sweepChecked={};
 
 function getMonday(d){const day=d.getDay();const diff=day===0?-6:1-day;const mon=new Date(d);mon.setDate(d.getDate()+diff);mon.setHours(0,0,0,0);return mon;}
-function getMondayKey(){return 'sweep_'+getMonday(new Date()).toISOString().split('T')[0]}
+function getMondayKey(){return 'sweep_'+getMonday(new Date()).toISOString().split('T')[0];}
 
 function initSweep(){
-  const now=new Date();const monday=getMonday(now);const sunday=new Date(monday);sunday.setDate(monday.getDate()+6);
+  const now=new Date();
+  const monday=getMonday(now);
+  const sunday=new Date(monday);
+  sunday.setDate(monday.getDate()+6);
   const fmt=d=>d.toLocaleDateString('en-CA',{month:'short',day:'numeric'});
   document.getElementById('sweepWeekLabel').textContent='week of '+fmt(monday)+' \u2013 '+fmt(sunday);
-  loadSweepState();renderSweep();
+  loadSweepState();
+  renderSweep();
   document.getElementById('sweepIntention').addEventListener('input',saveSweepState);
   document.getElementById('sweepNotes').addEventListener('input',saveSweepState);
 }
@@ -605,19 +573,24 @@ function loadSweepState(){
   const key=getMondayKey();
   try{
     const saved=JSON.parse(localStorage.getItem(key)||'null');
-    if(saved){sweepEnergy=saved.energy||'half';sweepChecked=saved.checked||{};if(saved.intention)document.getElementById('sweepIntention').value=saved.intention;if(saved.notes)document.getElementById('sweepNotes').value=saved.notes;}
+    if(saved){
+      sweepEnergy=saved.energy||'half';
+      sweepChecked=saved.checked||{};
+      if(saved.intention)document.getElementById('sweepIntention').value=saved.intention;
+      if(saved.notes)document.getElementById('sweepNotes').value=saved.notes;
+    }
   }catch(e){sweepChecked={};}
   document.querySelectorAll('#sweepEnergy .energy-chip-blush').forEach(c=>{c.classList.toggle('on',c.dataset.val===sweepEnergy);});
 }
 
 function selectSweepEnergy(btn){
   document.querySelectorAll('#sweepEnergy .energy-chip-blush').forEach(c=>c.classList.remove('on'));
-  btn.classList.add('on');sweepEnergy=btn.dataset.val;renderSweep();saveSweepState();
+  btn.classList.add('on');
+  sweepEnergy=btn.dataset.val;
+  renderSweep();
+  saveSweepState();
 }
 
-
-
-// ── RECURRING RHYTHM ───────────────────────────────────────────
 function renderSweep(){
   renderSweepSection('sweep-body',sweepSections.body);
   renderSweepSection('sweep-biz',sweepSections.biz);
@@ -637,8 +610,8 @@ function renderSweepSection(containerId,items){
 function toggleSweepItem(id,el){
   sweepChecked[id]=!sweepChecked[id];
   el.classList.toggle('sw-on',sweepChecked[id]);
-  el.querySelector('.sweep-dot') && (el.querySelector('.sweep-dot').style='');
-  saveSweepState();updateSweepProgress();
+  saveSweepState();
+  updateSweepProgress();
 }
 
 function updateSweepProgress(){
@@ -663,24 +636,28 @@ function showSweepComplete(){
   const msg=sweepMsgs[sweepEnergy]||sweepMsgs.half;
   document.getElementById('sweepCompleteTitle').textContent=msg.title;
   document.getElementById('sweepCompleteSub').textContent=msg.sub;
-  const card=document.getElementById('sweepComplete');card.classList.add('show');
+  const card=document.getElementById('sweepComplete');
+  card.classList.add('show');
   card.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 function resetSweep(){
-  sweepChecked={};document.getElementById('sweepComplete').classList.remove('show');
-  renderSweep();saveSweepState();showToast('sweep reset \u2014 fresh cup');
+  sweepChecked={};
+  document.getElementById('sweepComplete').classList.remove('show');
+  renderSweep();
+  saveSweepState();
+  showToast('sweep reset \u2014 fresh cup');
 }
 
 function copySweepNotes(){
   const notes=document.getElementById('sweepNotes').value.trim();
-  if(!notes){showToast('nothing to copy yet');return}
+  if(!notes){showToast('nothing to copy yet');return;}
   try{navigator.clipboard.writeText(notes).then(()=>showToast('notes copied \u2615'));}
   catch(e){showToast('select and copy manually');}
 }
 
-function escHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
-function escJs(s){return String(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'")}
+function escHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function escJs(s){return String(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
 
 initSweep();
 </script>
