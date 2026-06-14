@@ -636,77 +636,7 @@ function selectSweepEnergy(btn){
   btn.classList.add('on');sweepEnergy=btn.dataset.val;renderSweep();saveSweepState();
 }
 
-// ── LIVE NOTION PULL ───────────────────────────────────────────
-async function loadSweepTasks(){
-  
-  const btn=document.getElementById('sweepLoadBtn');btn.disabled=true;
-  document.getElementById('sweepLoadSpinner').classList.add('show');
-  document.getElementById('sweepLoadLabel').textContent='pouring...';
-  setStatus('sweepLoadStatus','loading','loading from coffee grounds...');
-  const now=new Date();
-  const monday=getMonday(now);
-  const sunday=new Date(monday);sunday.setDate(monday.getDate()+6);
-  const fmt=d=>d.toISOString().split('T')[0];
-  try{
-    const filter={or:[{and:[{property:'bucket',select:{equals:'daily brew'}},{property:'day-to-day',checkbox:{equals:true}},{property:'status',select:{does_not_equal:'Done'}},{property:'status',select:{does_not_equal:'On Hold'}}]},{and:[{property:'bucket',select:{equals:'daily brew'}},{property:'due',date:{on_or_after:fmt(monday)}},{property:'due',date:{on_or_before:fmt(sunday)}},{property:'status',select:{does_not_equal:'Done'}},{property:'status',select:{does_not_equal:'On Hold'}}]}]};
-    const data=await notionQuery(filter);
-    sweepLiveTasks=(data.results||[]).map(p=>({
-      id:p.id,
-      task:p.properties?.task?.title?.[0]?.plain_text||'untitled',
-      priority:p.properties?.priority?.select?.name||'',
-      area:p.properties?.area?.select?.name||'',
-      due:p.properties?.due?.date?.start||'',
-      dayToDay:p.properties?.['day-to-day']?.checkbox||false
-    }));
-    renderSweepLive();
-    document.getElementById('sweepLoadStatus').className='status-msg';
-    document.getElementById('sweepRefreshBtn').style.display='inline-flex';
-    showToast(sweepLiveTasks.length+' tasks loaded');
-  }catch(e){setStatus('sweepLoadStatus','error','couldn\'t load \u2014 '+e.message);}
-  btn.disabled=false;
-  document.getElementById('sweepLoadSpinner').classList.remove('show');
-  document.getElementById('sweepLoadLabel').textContent='pour from notion \u2192';
-}
 
-function renderSweepLive(){
-  const wrap=document.getElementById('sweepLiveWrap');
-  const today=new Date().toISOString().split('T')[0];
-  if(!sweepLiveTasks.length){
-    wrap.innerHTML='<p style="font-family:\'Lora\',serif;font-style:italic;font-size:.85rem;color:var(--rose-soft);padding:12px 0;">the pot is empty \u2014 nothing in daily brew this week.</p>';
-    return;
-  }
-  // Split: day-to-day anchors first, then this-week tasks
-  const anchors=sweepLiveTasks.filter(t=>t.dayToDay);
-  const weekTasks=sweepLiveTasks.filter(t=>!t.dayToDay);
-  let html='';
-  if(anchors.length){
-    html+=`<p style="font-family:'DM Mono',monospace;font-size:7.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--rose-mid);margin-bottom:8px;">anchors</p>`;
-    html+=anchors.map(t=>renderSweepLiveTask(t,today)).join('');
-  }
-  if(weekTasks.length){
-    html+=`<p style="font-family:'DM Mono',monospace;font-size:7.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--rose-mid);margin:${anchors.length?'14px':0} 0 8px;">this week</p>`;
-    html+=weekTasks.map(t=>renderSweepLiveTask(t,today)).join('');
-  }
-  wrap.innerHTML=html;
-}
-
-function renderSweepLiveTask(t,today){
-  const task=t.task||t.name||'untitled';
-  const priority=t.priority||'';
-  const due=t.due||'';
-  const area=t.area||'';
-  const isOverdue=due&&due<today;
-  return `<div class="task-row" style="cursor:default;margin-bottom:5px;background:var(--rose-paler);border-color:var(--rose-border);">
-    <div class="task-body">
-      <div class="task-name">${escHtml(task)}</div>
-      <div class="task-meta">
-        ${priority?`<span class="tag tag-${priority.toLowerCase()}">${priority}</span>`:''}
-        ${area?`<span class="tag tag-area">${area}</span>`:''}
-        ${due?`<span class="tag ${isOverdue?'tag-overdue':'tag-due'}">${isOverdue?'overdue: ':'due: '}${due}</span>`:''}
-      </div>
-    </div>
-  </div>`;
-}
 
 // ── RECURRING RHYTHM ───────────────────────────────────────────
 function renderSweep(){
