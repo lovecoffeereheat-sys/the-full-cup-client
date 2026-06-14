@@ -521,7 +521,7 @@ function moveDumpItem(item,from,to){
   if(dumpTimeframe==='week'&&dumpResult.later_week.length>0)buildSpread(dumpResult.later_week);
 }
 
-function resetDump(){document.getElementById('dumpText').value='';document.getElementById('dumpOutput').style.display='none';document.getElementById('dumpSaveStatus').className='notion-status';document.getElementById('spreadWrap').style.display='none';dumpResult=null;spreadResult=null;}
+function resetDump(){document.getElementById('dumpText').value='';document.getElementById('dumpOutput').style.display='none';document.getElementById('spreadWrap').style.display='none';dumpResult=null;spreadResult=null;}
 
 async function buildSpread(weekItems){
   if(!weekItems.length){document.getElementById('spreadWrap').style.display='none';return}
