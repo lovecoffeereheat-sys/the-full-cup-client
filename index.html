@@ -580,7 +580,7 @@ const sweepSections={
   ]
 };
 
-let sweepEnergy='half',sweepChecked={},sweepLiveTasks=[];
+let sweepEnergy='half',sweepChecked={};
 
 function getMonday(d){const day=d.getDay();const diff=day===0?-6:1-day;const mon=new Date(d);mon.setDate(d.getDate()+diff);mon.setHours(0,0,0,0);return mon;}
 function getMondayKey(){return 'sweep_'+getMonday(new Date()).toISOString().split('T')[0]}
